@@ -1,0 +1,37 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    reactor.netty.http.client: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: vehiculos-service
+              uri: lb://VEHICULOS
+              predicates:
+                - Path=/api/vehiculos, /api/vehiculos/**
+            - id: operaciones-service
+              uri: lb://OPERACIONES
+              predicates:
+                - Path=/api/operaciones, /api/operaciones/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    prefer-ip-address: true
