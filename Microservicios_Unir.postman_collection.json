@@ -1,0 +1,313 @@
+{
+  "info": {
+    "_postman_id": "5af1e98e-aad4-4276-9d32-abafdc71c4b1",
+    "name": "Microservicios_Unir",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9315061"
+  },
+  "item": [
+    {
+      "name": "vehiculos",
+      "item": [
+        {
+          "name": "getVehiculos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/vehiculos",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "vehiculos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getVehiculoById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/vehiculos/1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "vehiculos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getVehiculoByMarca",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/vehiculos/buscar?marca=Chevrolet",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "vehiculos",
+                "buscar"
+              ],
+              "query": [
+                {
+                  "key": "marca",
+                  "value": "Chevrolet"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getVehiculobyModelo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/vehiculos/buscar?modelo=Spark",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "vehiculos",
+                "buscar"
+              ],
+              "query": [
+                {
+                  "key": "modelo",
+                  "value": "Spark"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getVehiculobyEstado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/vehiculos/buscar?estado=true",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "vehiculos",
+                "buscar"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "createVehiculo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"placa\": \"ABD-9872\",\r\n    \"marca\": \"Toyota\",\r\n    \"modelo\": \"Deportiva\",\r\n    \"color\": \"Negra\",\r\n    \"estado\": true\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/vehiculos",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "vehiculos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "putVechiculo",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"placa\": \"XYZ-9876\",\r\n    \"marca\": \"Chevrolet\",\r\n    \"modelo\": \"Spark GT\",\r\n    \"color\": \"Blanco\",\r\n    \"estado\": true\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/vehiculos/1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "vehiculos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "operaciones",
+      "item": [
+        {
+          "name": "listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/operaciones/solicitudes",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "operaciones",
+                "solicitudes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"vehiculoId\": 1,\r\n  \"clienteNombre\": \"Juan Pérez\",\r\n  \"fechaInicio\": \"2026-05-15\",\r\n  \"fechaFin\": \"2026-05-20\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/operaciones/solicitudes",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "operaciones",
+                "solicitudes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "confirmar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"vehiculoId\": 1,\r\n  \"clienteNombre\": \"Juan Pérez\",\r\n  \"fechaInicio\": \"2026-05-15\",\r\n  \"fechaFin\": \"2026-05-20\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/operaciones/solicitudes/1/confirmar",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "operaciones",
+                "solicitudes",
+                "1",
+                "confirmar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "cancelar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"vehiculoId\": 1,\r\n  \"clienteNombre\": \"Juan Pérez\",\r\n  \"fechaInicio\": \"2026-05-15\",\r\n  \"fechaFin\": \"2026-05-20\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/operaciones/solicitudes/1/cancelar",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "operaciones",
+                "solicitudes",
+                "1",
+                "cancelar"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": ""
+    }
+  ]
+}
