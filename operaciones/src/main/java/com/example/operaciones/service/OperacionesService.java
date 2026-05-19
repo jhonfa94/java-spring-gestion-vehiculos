@@ -25,6 +25,10 @@ public class OperacionesService {
         return repository.findAll();
     }
 
+    public List<SolicitudAlquiler> obtenerActivasPorVehiculo(Integer vehiculoId) {
+        return repository.findByVehiculoIdAndEstadoSolicitudIn(vehiculoId, List.of("PENDIENTE", "APROBADO"));
+    }
+
     public SolicitudAlquiler obtenerPorId(Integer id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
     }
@@ -35,8 +39,13 @@ public class OperacionesService {
         if (vehiculo == null) {
             throw new RuntimeException("El vehículo no existe");
         }
-        if (!vehiculo.getEstado()) {
-            throw new RuntimeException("El vehículo no está disponible para alquiler");
+        
+        List<SolicitudAlquiler> activas = obtenerActivasPorVehiculo(solicitud.getVehiculoId());
+        for (SolicitudAlquiler activa : activas) {
+            if (!(solicitud.getFechaFin().isBefore(activa.getFechaInicio()) || 
+                  solicitud.getFechaInicio().isAfter(activa.getFechaFin()))) {
+                throw new RuntimeException("El vehículo ya se encuentra ocupado en estas fechas.");
+            }
         }
 
         solicitud.setEstadoSolicitud("PENDIENTE");
@@ -47,7 +56,7 @@ public class OperacionesService {
         SolicitudAlquiler solicitud = obtenerPorId(id);
         
         if (!"PENDIENTE".equals(solicitud.getEstadoSolicitud())) {
-            throw new RuntimeException("Solo se pueden confirmar solicitudes en estado PENDIENTE");
+            throw new RuntimeException("Solo se pueden aprobar solicitudes en estado PENDIENTE");
         }
 
         VehiculoDto vehiculo = vehiculoClient.obtenerVehiculoPorId(solicitud.getVehiculoId());
@@ -55,23 +64,20 @@ public class OperacionesService {
             throw new RuntimeException("El vehículo ya no está disponible");
         }
 
-        // Update vehicle status
         vehiculo.setEstado(false);
         vehiculoClient.actualizarEstadoVehiculo(vehiculo.getId(), vehiculo);
-
-        // Update request status
-        solicitud.setEstadoSolicitud("CONFIRMADA");
+        solicitud.setEstadoSolicitud("APROBADO");
         return repository.save(solicitud);
     }
 
     public SolicitudAlquiler cancelarSolicitud(Integer id) {
         SolicitudAlquiler solicitud = obtenerPorId(id);
         
-        if ("CANCELADA".equals(solicitud.getEstadoSolicitud())) {
-            throw new RuntimeException("La solicitud ya está cancelada");
+        if ("RECHAZADO".equals(solicitud.getEstadoSolicitud())) {
+            throw new RuntimeException("La solicitud ya está rechazada");
         }
 
-        if ("CONFIRMADA".equals(solicitud.getEstadoSolicitud())) {
+        if ("APROBADO".equals(solicitud.getEstadoSolicitud())) {
             VehiculoDto vehiculo = vehiculoClient.obtenerVehiculoPorId(solicitud.getVehiculoId());
             if (vehiculo != null) {
                 vehiculo.setEstado(true);
@@ -79,7 +85,7 @@ public class OperacionesService {
             }
         }
 
-        solicitud.setEstadoSolicitud("CANCELADA");
+        solicitud.setEstadoSolicitud("RECHAZADO");
         return repository.save(solicitud);
     }
 }

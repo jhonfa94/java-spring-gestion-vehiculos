@@ -25,6 +25,11 @@ public class OperacionesController {
         return ResponseEntity.ok(operacionesService.obtenerTodas());
     }
 
+    @GetMapping("/vehiculo/{vehiculoId}")
+    public ResponseEntity<List<SolicitudAlquiler>> obtenerPorVehiculo(@PathVariable Integer vehiculoId) {
+        return ResponseEntity.ok(operacionesService.obtenerActivasPorVehiculo(vehiculoId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<SolicitudAlquiler> obtenerPorId(@PathVariable Integer id) {
         try {

@@ -7,11 +7,12 @@ Sistema basado en **arquitectura de microservicios** desarrollado con **Spring B
 ## 📋 Tabla de Contenidos
 
 - [Arquitectura](#-arquitectura)
-- [Microservicios](#-microservicios)
+- [Componentes y Microservicios](#-componentes-y-microservicios)
   - [Eureka Server](#1-eureka-server)
   - [API Gateway](#2-api-gateway)
   - [Vehículos](#3-microservicio-vehículos)
   - [Operaciones](#4-microservicio-operaciones)
+  - [Frontend (React)](#5-frontend-react)
 - [Endpoints - Vehículos](#-endpoints---vehículos)
 - [Endpoints - Operaciones](#-endpoints---operaciones)
 - [Inicio con Docker Compose](#-inicio-con-docker-compose)
@@ -35,27 +36,29 @@ Sistema basado en **arquitectura de microservicios** desarrollado con **Spring B
 │     :8080         │   │     :8081         │   │     :8082         │
 │                   │   │                   │   │                   │
 │ Enruta peticiones │   │ CRUD Vehículos    │   │ Solicitudes de    │
-│ a los servicios   │   │ MySQL             │   │ alquiler (H2)     │
-└───────────────────┘   └─────────┬─────────┘   └──────────┬───────┘
-                                  │                        │
-                         ┌────────▼─────────┐              │
-                         │     MySQL 8.0     │◄─────────────┘
-                         │   BD: gestion     │  (consulta vehículos
-                         │     :3306         │   via REST + Eureka)
-                         └──────────────────┘
+│ a los servicios   │   │ MySQL             │   │ alquiler (MySQL)  │
+└─────────▲─────────┘   └─────────┬─────────┘   └──────────┬───────┘
+          │                       │                        │
+          │ Proxy Nginx           ┌────────▼─────────┐              │
+┌─────────▼────────┐              │     MySQL 8.0     │◄─────────────┘
+│   Frontend        │              │   BD: gestion     │  (consulta vehículos
+│   (React + Vite)  │              │     :3306         │   via REST + Eureka)
+│     :80           │              └──────────────────┘
+└───────────────────┘
 ```
 
 | Componente     | Puerto | Tecnología                          |
 |----------------|--------|-------------------------------------|
+| Frontend       | 80     | React 19 + Vite + Tailwind + Nginx  |
 | Eureka Server  | 8761   | Spring Cloud Netflix Eureka         |
 | API Gateway    | 8080   | Spring Cloud Gateway (WebFlux)      |
 | Vehículos      | 8081   | Spring Boot + JPA + MySQL           |
-| Operaciones    | 8082   | Spring Boot + JPA + H2 (en memoria) |
+| Operaciones    | 8082   | Spring Boot + JPA + MySQL           |
 | MySQL          | 3306   | MySQL 8.0                           |
 
 ---
 
-## 🔧 Microservicios
+## 🔧 Componentes y Microservicios
 
 ### 1. Eureka Server
 
@@ -95,13 +98,22 @@ Gestiona el CRUD completo de vehículos. Persiste los datos en una base de datos
 
 **Directorio:** `operaciones/` | **Puerto:** `8082`
 
-Gestiona las solicitudes de alquiler de vehículos. Utiliza **H2** (base de datos en memoria) para almacenar las solicitudes. Se comunica con el microservicio de **Vehículos** a través de **RestTemplate con balanceo de carga** (Eureka) para validar la disponibilidad y actualizar el estado del vehículo.
+Gestiona las solicitudes de alquiler de vehículos. Utiliza **MySQL** para almacenar las solicitudes persistentes (la tabla de `solicitudes` se crea en la misma base de datos `gestion`). Se comunica con el microservicio de **Vehículos** a través de **RestTemplate con balanceo de carga** (Eureka) para validar la disponibilidad y actualizar el estado del vehículo.
 
 **Flujo de una solicitud:**
 1. El cliente crea una solicitud de alquiler (estado `PENDIENTE`)
 2. Se valida que el vehículo exista y esté disponible consultando al microservicio Vehículos
 3. Al confirmar, el estado del vehículo se actualiza a inactivo
 4. Al cancelar, el vehículo vuelve a estar disponible
+
+---
+
+### 5. Frontend (React)
+
+**Directorio:** `FrontSistemaGestion/` | **Puerto:** `80`
+
+Aplicación Single Page (SPA) moderna desarrollada con **React 19**, **Vite** y **Tailwind CSS**.
+Al estar contenerizada en Docker, es servida por un servidor web estático y veloz **Nginx**. Este servidor web incluye una configuración de Proxy Reverso (Reverse Proxy) interna que permite enrutar automáticamente cualquier llamada hacia la ruta `/api/` directamente al contenedor del **API Gateway (`gateway:8080`)**, eliminando de esta forma cualquier problema de red o CORS en producción.
 
 ---
 

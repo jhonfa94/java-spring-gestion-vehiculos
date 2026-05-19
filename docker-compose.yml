@@ -72,5 +72,14 @@ services:
         condition: service_healthy
     restart: always
 
+  frontend:
+    build: ./frontSistemaGestion
+    container_name: frontend_gestion
+    ports:
+      - "80:80"
+    depends_on:
+      - gateway
+    restart: always
+
 volumes:
   mysql_data:
