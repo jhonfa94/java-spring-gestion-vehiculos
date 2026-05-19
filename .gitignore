@@ -1,6 +1,6 @@
 # Dependencies
 /node_modules
-/frontSistemaGestion/node_modules
+# /frontSistemaGestion/node_modules
 
 # Logs
 *.log
